@@ -93,8 +93,24 @@ def print_planting_schedule(crop, months, days):
         print(f"{i+1}\t\t{months[i]}\t{days[i]}")
 
 #######################################################################
-# Main Program
+# Function: make_planting_schedule
+# Description: Loops through valid planting cycles and stores them in lists
+# Parameters: start_month (int), start_day (int), days_to_mature (int),
+#             months_list (list), days_list (list)
+# Return values: int - number of planting dates added
+# Pre-Conditions: inputs must be validated
+# Post-Conditions: planting dates added to months_list and days_list
 #######################################################################
+def make_planting_schedule(start_month, start_day, days_to_mature, months_list, days_list):
+    month = start_month
+    day = start_day
+    while before_frost(month, day):
+        months_list.append(month)
+        days_list.append(day)
+        month, day = calculate_next_plant_date(month, day, days_to_mature + HARVEST_BUFFER)
+    return len(months_list)
+
+# Main Program
 def main():
     crop_name = input("Enter crop name: ")
 
@@ -105,15 +121,7 @@ def main():
     planting_months = []
     planting_days = []
 
-    current_month = start_month
-    current_day = start_day
-
-    while before_frost(current_month, current_day):
-        planting_months.append(current_month)
-        planting_days.append(current_day)
-        current_month, current_day = calculate_next_plant_date(
-            current_month, current_day, days_to_mature + HARVEST_BUFFER)
-
+    make_planting_schedule(start_month, start_day, days_to_mature, planting_months, planting_days)
     print_planting_schedule(crop_name, planting_months, planting_days)
 
 main()
